@@ -1,0 +1,30 @@
+<resources>
+    <string name="DefaultUser">User</string>
+    <string name="nova_disciplina_title">Nova Disciplina</string>
+    <string name="nome_label">Nome</string>
+    <string name="local_label">Local</string>
+    <string name="professor_label">Professor</string>
+    <string name="selecionar_imagem_label">Selecionar imagem</string>
+    <string name="dias_da_semana_label">Dias da Semana</string>
+    <string name="horarios_label">Horários</string>
+
+    <string name="seg_short">Seg</string>
+    <string name="ter_short">Ter</string>
+    <string name="qua_short">Qua</string>
+    <string name="qui_short">Qui</string>
+    <string name="sex_short">Sex</string>
+
+    <string name="seg_full">Segunda</string>
+    <string name="ter_full">Terça</string>
+    <string name="qua_full">Quarta</string>
+    <string name="qui_full">Quinta</string>
+    <string name="sex_full">Sexta</string>
+
+    <string name="inicio_label">Início</string>
+    <string name="termino_label">Término</string>
+    <string name="adicionar_button">Adicionar</string>
+    <string name="add_disciplina_fab_desc">Adicionar Nova Disciplina</string>
+
+    <string name="tarefas_title">Tarefas</string>
+    <string name="add_tarefa_fab_desc">Adicionar Nova Tarefa</string>
+</resources>
