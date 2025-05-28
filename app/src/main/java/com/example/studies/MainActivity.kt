@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studies.ui.theme.StudiesTheme
 import com.example.studies.view.screens.AddDisciplineScreen
 import com.example.studies.view.screens.TasksScreen
+import com.example.studies.view.screens.SettingsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +59,11 @@ fun StudiesApp() {
         composable("tasks"){
             TasksScreen(navController = navController)
         }
+        composable("settings") {
+            SettingsScreen(navController = navController)
+        }
     }
+
 }
 
 @Preview(showBackground = true)

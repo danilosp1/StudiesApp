@@ -38,4 +38,11 @@
 
     <string name="tarefas_title">Tarefas</string>
     <string name="add_tarefa_fab_desc">Adicionar Nova Tarefa</string>
+
+    <string name="configuracoes_screen_top_bar_title">Configurações</string> 
+    <string name="configuracoes_main_title">Configurações</string>
+    <string name="sobre_button">Sobre</string>
+    <string name="contato_button">Contato</string>
+    <string name="sobre_icon_desc">Ícone de informação</string>
+    <string name="contato_icon_desc">Ícone de telefone</string>
 </resources>
