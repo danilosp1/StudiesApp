@@ -1,5 +1,16 @@
 <resources>
+    <string name="Ola_Inicio">Olá, %1$s!</string>
+    <string name="AulasDoDia">Aulas do dia</string>
+    <string name="HomeLocal">Local</string>
+    <string name="AddDisciplina">Adicionar nova disciplina</string>
+    <string name="DisciplinasTitulo">Suas Disciplinas</string>
     <string name="DefaultUser">User</string>
+    <string name="D1">Disciplina 1</string>
+    <string name="D2">Disciplina 2</string>
+    <string name="D3">Disciplina 3</string>
+    <string name="D4">Disciplina 4</string>
+
+
     <string name="nova_disciplina_title">Nova Disciplina</string>
     <string name="nome_label">Nome</string>
     <string name="local_label">Local</string>
