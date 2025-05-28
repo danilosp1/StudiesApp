@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.studies.R // Make sure this R is correctly imported from your app's package
+import com.example.studies.R
 import com.example.studies.view.components.Footer
-import com.example.studies.ui.theme.StudiesTheme // Assuming you have this from your project
+import com.example.studies.ui.theme.StudiesTheme
 import com.example.studies.view.components.SmallButton
 
 @Composable

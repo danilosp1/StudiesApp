@@ -6,11 +6,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,198 +22,200 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.studies.data.Task
+import com.example.studies.MainActivity
+import com.example.studies.StudiesApplication
 import com.example.studies.ui.theme.StudiesTheme
 import com.example.studies.view.components.Footer
 import com.example.studies.viewmodel.TaskViewModel
+import com.example.studies.viewmodel.TaskViewModelFactory
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.format.FormatStyle
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailScreen(
     navController: NavController,
-    viewModel: TaskViewModel = viewModel()
+    taskId: Long,
+    viewModel: TaskViewModel = viewModel(
+        factory = TaskViewModelFactory((LocalContext.current.applicationContext as StudiesApplication).repository)
+    )
 ) {
-    val task = viewModel.selectedTask.observeAsState().value
-
-    if (task == null) {
-        if (!LocalInspectionMode.current) {
-            navController.popBackStack()
+    LaunchedEffect(taskId) {
+        if (taskId != -1L) {
+            viewModel.loadTaskById(taskId)
         }
-        return
     }
 
+    val uiState by viewModel.selectedTaskDetailUiState.collectAsState()
+    val task = uiState.task
+    val disciplineName = uiState.disciplineName
+    val isLoading = uiState.isLoading
+    val errorMessage = uiState.errorMessage
+
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Detalhes da Tarefa") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
+        },
         bottomBar = {
-            Footer(navController = navController, currentRoute = "taskDetail")
+            Footer(navController = navController, currentRoute = null)
         },
         content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(start = 16.dp, end = 16.dp, top = 100.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = task.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(start = 27.dp, bottom = 5.dp)
-                )
-                HorizontalDivider(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 25.dp, end = 25.dp)
-                )
-                Text(
-                    text = task.discipline,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .padding(top = 5.dp, start = 27.dp, bottom = 16.dp)
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Descrição:",
-                        fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = task.description,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Left
-                    )
+            when {
+                isLoading -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                errorMessage != null -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                        Text("Erro: $errorMessage", color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                task == null -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                        Text("Tarefa não encontrada.")
+                    }
+                }
+                else -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = task.name,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Prazo de entrega:",
-                        fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    val dateTimeString = remember(task.dueDate, task.dueTime) {
-                        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                        val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-                        val dateStr = task.dueDate?.format(dateFormatter)
-                        val timeStr = task.dueTime?.format(timeFormatter)
-                        when {
-                            dateStr != null && timeStr != null -> "$dateStr - $timeStr"
-                            dateStr != null -> dateStr
-                            timeStr != null -> "Hora: $timeStr"
-                            else -> null
+                        disciplineName?.let {
+                            Text(
+                                text = it,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(bottom = 24.dp)
+                            )
+                        } ?: Text(
+                            text = "Tarefa Geral",
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+
+
+                        DetailSection(title = "Descrição:", content = task.description ?: "Nenhuma descrição.")
+                        DetailSection(title = "Prazo de entrega:", content = formatTaskDeadline(task.dueDate, task.dueTime))
+                        DetailSection(title = "Status:", content = if (task.isCompleted) "Concluída" else "Pendente",
+                            contentColor = if (task.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Button(
+                            onClick = {
+                                viewModel.updateTaskCompletion(task, !task.isCompleted)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                                .height(50.dp)
+                        ) {
+                            Text(
+                                text = if (task.isCompleted) "Marcar como Pendente" else "Concluir Tarefa",
+                                fontSize = 18.sp
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                viewModel.deleteTask(task)
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                                .height(50.dp)
+                        ) {
+                            Text(
+                                text = "Deletar Tarefa",
+                                color = MaterialTheme.colorScheme.onError,
+                                fontSize = 18.sp
+                            )
                         }
                     }
-                    dateTimeString?.let {
-                        Text(
-                            text = it,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    } ?: Text(
-                        text = "Não definido",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Status:",
-                        fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = if (task.isCompleted) "Concluída" else "Pendente",
-                        fontSize = 20.sp,
-                        color = if (task.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Button(
-                    onClick = {
-                        viewModel.completeTask(task.id)
-                        navController.popBackStack()
-                    },
-                    enabled = !task.isCompleted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 30.dp, start = 100.dp, end = 100.dp)
-                        .height(50.dp)
-                ) {
-                    Text(
-                        text = if (task.isCompleted) "Concluída" else "Concluir",
-                        fontSize = 18.sp
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        viewModel.deleteTask(task.id)
-                        navController.popBackStack()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 32.dp, start = 100.dp, end = 100.dp)
-                        .height(50.dp)
-                ) {
-                    Text(
-                        text = "Deletar", color = MaterialTheme.colorScheme.onError,
-                        fontSize = 18.sp
-                    )
                 }
             }
         }
     )
 }
 
-@Preview(showBackground = true, name = "TaskDetailScreen Centered Sections")
 @Composable
-fun TaskDetailScreenCenteredPreview() {
-    StudiesTheme {
-        val navController = rememberNavController()
-        val viewModel = viewModel<TaskViewModel>()
-        val mockTaskForPreview = Task(
-            id = "previewTask1",
-            name = "Título da Tarefa (Esquerda)",
-            discipline = "Disciplina (Esquerda)",
-            description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            dueDate = LocalDate.now().plusDays(1),
-            dueTime = LocalTime.of(18, 45),
-            isCompleted = false
+private fun DetailSection(title: String, content: String, contentColor: Color = MaterialTheme.colorScheme.onSurface) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(bottom = 4.dp)
         )
-        LaunchedEffect(key1 = Unit) { viewModel.selectTask(mockTaskForPreview) }
-        TaskDetailScreen(navController = navController, viewModel = viewModel)
+        Text(
+            text = content,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Start,
+            color = contentColor
+        )
+    }
+}
+
+private fun formatTaskDeadline(dueDateStr: String?, dueTimeStr: String?): String {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val displayTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale("pt", "BR"))
+
+
+    val date = try { dueDateStr?.let { LocalDate.parse(it, dateFormatter) } } catch (e: DateTimeParseException) { null }
+    val time = try { dueTimeStr?.let { LocalTime.parse(it, timeFormatter) } } catch (e: DateTimeParseException) { null }
+
+    return when {
+        date != null && time != null -> "${date.format(dateFormatter)} - ${time.format(displayTimeFormatter)}"
+        date != null -> date.format(dateFormatter)
+        time != null -> "Hora: ${time.format(displayTimeFormatter)}"
+        else -> "Não definido"
+    }
+}
+
+
+@Preview(showBackground = true, name = "TaskDetailScreen Preview")
+@Composable
+fun TaskDetailScreenPreview() {
+    StudiesTheme {
+        TaskDetailScreen(navController = rememberNavController(), taskId = -1L)
     }
 }

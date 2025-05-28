@@ -6,18 +6,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.studies.data.AppDatabase
+import com.example.studies.data.repository.AppRepository
 import com.example.studies.view.screens.HomeScreen
 import com.example.studies.view.screens.DisciplinesScreen
 import com.example.studies.view.screens.WelcomeScreen
@@ -26,10 +33,13 @@ import com.example.studies.view.screens.SettingsScreen
 import com.example.studies.view.screens.AddTaskScreen
 import com.example.studies.viewmodel.TaskViewModel
 import com.example.studies.view.screens.AddDisciplineScreen
+import com.example.studies.view.screens.TaskDetailScreen
 import com.example.studies.view.screens.TasksScreen
+import com.example.studies.viewmodel.DisciplineViewModelFactory
+import com.example.studies.viewmodel.TaskViewModelFactory
+
 
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,20 +55,24 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudiesApp() {
     val navController = rememberNavController()
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
 
-    val context = navController.context
-    val sharedPref = context.getSharedPreferences("studies_prefs", Context.MODE_PRIVATE)
-    val userNameSaved = sharedPref.contains("user_name")
+    val application = LocalContext.current.applicationContext as StudiesApplication
+    val repository = application.repository
+
+    val sharedPref = remember(application) {
+        application.getSharedPreferences("studies_prefs", Context.MODE_PRIVATE)
+    }
+    val userNameSaved = remember(sharedPref) {
+        sharedPref.contains("user_name")
+    }
 
     val startDestination = if (userNameSaved) "home" else "welcome"
 
-    val taskViewModel: TaskViewModel = viewModel()
+    val taskViewModelFactory = remember(repository) { TaskViewModelFactory(repository) }
+    val disciplineViewModelFactory = remember(repository) { DisciplineViewModelFactory(repository) }
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("welcome") {
@@ -68,28 +82,56 @@ fun StudiesApp() {
             HomeScreen(navController = navController)
         }
         composable("disciplines") {
-            DisciplinesScreen(navController = navController)
+            DisciplinesScreen(
+                navController = navController,
+                viewModel = viewModel(factory = disciplineViewModelFactory)
+            )
         }
         composable("settings") {
             SettingsScreen(navController = navController)
         }
         composable("addTask") {
-            AddTaskScreen(navController = navController, viewModel = taskViewModel)
+            AddTaskScreen(
+                navController = navController,
+                viewModel = viewModel(factory = taskViewModelFactory)
+            )
         }
         composable("add_discipline") {
-            AddDisciplineScreen(navController = navController)
+            AddDisciplineScreen(
+                navController = navController,
+                viewModel = viewModel(factory = disciplineViewModelFactory)
+            )
         }
         composable("tasks"){
-            TasksScreen(navController = navController)
+            TasksScreen(
+                navController = navController,
+                viewModel = viewModel(factory = taskViewModelFactory)
+            )
+        }
+        composable(
+            route = "taskDetail/{taskId}",
+            arguments = listOf(navArgument("taskId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")
+            if (taskId != null && taskId != -1L) {
+                TaskDetailScreen(
+                    navController = navController,
+                    taskId = taskId,
+                    viewModel = viewModel(factory = taskViewModelFactory)
+                )
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack()
+                }
+            }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     StudiesTheme {
-        StudiesApp()
+        Text("App Preview (Funcionalidade do ViewModel não disponível no preview)")
     }
 }
