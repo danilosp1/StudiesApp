@@ -3,6 +3,7 @@ package com.example.studies.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.studies.data.dao.DisciplineWithSchedules
 import com.example.studies.data.model.DisciplineEntity
 import com.example.studies.data.model.SubjectScheduleEntity
 import com.example.studies.data.repository.AppRepository
@@ -12,18 +13,32 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class DisciplineUiState(
+data class DisciplinesListUiState(
     val disciplines: List<DisciplineEntity> = emptyList()
 )
 
+data class DisciplinesWithSchedulesUiState(
+    val disciplines: List<DisciplineWithSchedules> = emptyList()
+)
+
 class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
-    val disciplinesUiState: StateFlow<DisciplineUiState> =
+
+    val disciplinesUiState: StateFlow<DisciplinesListUiState> =
         repository.getAllDisciplines()
-            .map { DisciplineUiState(it) }
+            .map { DisciplinesListUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000L),
-                initialValue = DisciplineUiState()
+                initialValue = DisciplinesListUiState()
+            )
+
+    val disciplinesWithSchedulesUiState: StateFlow<DisciplinesWithSchedulesUiState> =
+        repository.getAllDisciplinesWithSchedules()
+            .map { DisciplinesWithSchedulesUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000L),
+                initialValue = DisciplinesWithSchedulesUiState()
             )
 
     fun addDiscipline(name: String, location: String?, professor: String?, schedules: List<SubjectScheduleEntity>) {
@@ -36,7 +51,6 @@ class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
             repository.insertDisciplineWithSchedules(discipline, schedules)
         }
     }
-
 }
 
 class DisciplineViewModelFactory(private val repository: AppRepository) : ViewModelProvider.Factory {

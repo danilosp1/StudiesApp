@@ -20,6 +20,10 @@
     <string name="dias_da_semana_label">Dias da Semana</string>
     <string name="horarios_label">Horários</string>
 
+    <string name="local_nao_definido">Local não definido</string>
+    <string name="sem_aulas_hoje">Sem aulas programadas para hoje.</string>
+    <string name="subject_icon_desc">Ícone da disciplina</string>
+
     <string name="seg_short">Seg</string>
     <string name="ter_short">Ter</string>
     <string name="qua_short">Qua</string>
@@ -31,6 +35,8 @@
     <string name="qua_full">Quarta</string>
     <string name="qui_full">Quinta</string>
     <string name="sex_full">Sexta</string>
+    <string name="sab_full">Sábado</string>
+    <string name="dom_full">Domingo</string>
 
     <string name="inicio_label">Início</string>
     <string name="termino_label">Término</string>

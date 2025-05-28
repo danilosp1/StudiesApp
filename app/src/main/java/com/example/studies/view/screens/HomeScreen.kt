@@ -29,6 +29,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import com.example.studies.R
 import androidx.compose.foundation.background
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studies.StudiesApplication
+import com.example.studies.data.dao.DisciplineWithSchedules
+import com.example.studies.data.model.SubjectScheduleEntity
+import com.example.studies.viewmodel.DisciplineViewModel
+import com.example.studies.viewmodel.DisciplineViewModelFactory
+import java.time.DayOfWeek
 
 data class Subject(val name: String, val time: String, val location: String)
 
@@ -39,17 +46,44 @@ val highlightColor = Color(0xFFFFF59D)
 val dividerColorHomeScreen = Color(0xFF0E0E0E)
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: DisciplineViewModel = viewModel(
+        factory = DisciplineViewModelFactory((LocalContext.current.applicationContext as StudiesApplication).repository)
+    )
+) {
     val context = LocalContext.current
     val userName = remember { mutableStateOf(loadUserName(context)) }
+    val disciplinesWithSchedulesUiState by viewModel.disciplinesWithSchedulesUiState.collectAsState()
 
-    val todaySubjects = listOf(
-        Subject(stringResource(id = R.string.D1), "08:00 - 10:00", stringResource(id = R.string.HomeLocal)),
-        Subject(stringResource(id = R.string.D2), "14:00 - 16:00", stringResource(id = R.string.HomeLocal)),
-        Subject(stringResource(id = R.string.D4), "16:00 - 18:00", stringResource(id = R.string.HomeLocal))
-    )
+    val today = LocalDate.now()
+    val currentDayOfWeekPortuguese = remember(today, context) {
+        when (today.dayOfWeek) {
+            DayOfWeek.MONDAY -> context.getString(R.string.seg_full)
+            DayOfWeek.TUESDAY -> context.getString(R.string.ter_full)
+            DayOfWeek.WEDNESDAY -> context.getString(R.string.qua_full)
+            DayOfWeek.THURSDAY -> context.getString(R.string.qui_full)
+            DayOfWeek.FRIDAY -> context.getString(R.string.sex_full)
+            DayOfWeek.SATURDAY -> context.getString(R.string.sab_full)
+            DayOfWeek.SUNDAY -> context.getString(R.string.dom_full)
+        }
+    }
 
-    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM", Locale("pt", "BR")))
+    val todaySubjects = remember(disciplinesWithSchedulesUiState.disciplines, currentDayOfWeekPortuguese, context) {
+        disciplinesWithSchedulesUiState.disciplines.flatMap { disciplineWithSchedules ->
+            disciplineWithSchedules.schedules
+                .filter { schedule -> schedule.dayOfWeek.equals(currentDayOfWeekPortuguese, ignoreCase = true) }
+                .map { schedule ->
+                    Subject(
+                        name = disciplineWithSchedules.discipline.name,
+                        time = "${schedule.startTime} - ${schedule.endTime}",
+                        location = disciplineWithSchedules.discipline.location ?: context.getString(R.string.local_nao_definido)
+                    )
+                }
+        }.sortedBy { it.time.substringBefore(" - ") }
+    }
+
+    val currentDateFormatted = today.format(DateTimeFormatter.ofPattern("dd/MM", Locale("pt", "BR")))
 
     Column(
         modifier = Modifier
@@ -87,7 +121,7 @@ fun HomeScreen(navController: NavController) {
                     color = primaryTextColorHomeScreen
                 )
                 Text(
-                    text = currentDate,
+                    text = currentDateFormatted,
                     fontSize = 25.sp,
                     color = primaryTextColorHomeScreen
                 )
@@ -95,11 +129,24 @@ fun HomeScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.padding(bottom = 30.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(25.dp)
-            ) {
-                items(todaySubjects) { subject ->
-                    SubjectCard(subject = subject)
+            if (todaySubjects.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.sem_aulas_hoje),
+                        fontSize = 18.sp,
+                        color = secondaryTextColorHomeScreen
+                    )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(25.dp)
+                ) {
+                    items(todaySubjects) { subject ->
+                        SubjectCard(subject = subject)
+                    }
                 }
             }
         }
@@ -156,7 +203,7 @@ fun SubjectCard(subject: Subject) {
         ) {
             Icon(
                 imageVector = Icons.Outlined.DateRange,
-                contentDescription = "Ícone da disciplina",
+                contentDescription = stringResource(id = R.string.subject_icon_desc),
                 modifier = Modifier.size(36.dp),
                 tint = primaryTextColorHomeScreen
             )
@@ -182,7 +229,7 @@ fun loadUserName(context: Context): String {
     return sharedPref.getString("user_name", "User") ?: "User"
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFEAEAEA)
+@Preview(showBackground = true)
 @Composable
 fun PreviewHomeScreen() {
     StudiesTheme {
