@@ -18,12 +18,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.studies.view.screens.HomeScreen
+import com.example.studies.view.screens.DisciplinesScreen
+import com.example.studies.view.screens.WelcomeScreen
 import com.example.studies.ui.theme.StudiesTheme
+import com.example.studies.view.screens.SettingsScreen
+import com.example.studies.view.screens.AddTaskScreen
+import com.example.studies.viewmodel.TaskViewModel
 import com.example.studies.view.screens.AddDisciplineScreen
 import com.example.studies.view.screens.TasksScreen
-import com.example.studies.view.screens.SettingsScreen
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,6 +45,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudiesApp() {
     val navController = rememberNavController()
@@ -51,21 +58,34 @@ fun StudiesApp() {
 
     val startDestination = if (userNameSaved) "home" else "welcome"
 
+    val taskViewModel: TaskViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = startDestination) {
+        composable("welcome") {
+            WelcomeScreen(navController = navController)
+        }
+        composable("home") {
+            HomeScreen(navController = navController)
+        }
+        composable("disciplines") {
+            DisciplinesScreen(navController = navController)
+        }
+        composable("settings") {
+            SettingsScreen(navController = navController)
+        }
+        composable("addTask") {
+            AddTaskScreen(navController = navController, viewModel = taskViewModel)
+        }
         composable("add_discipline") {
             AddDisciplineScreen(navController = navController)
         }
         composable("tasks"){
             TasksScreen(navController = navController)
         }
-        composable("settings") {
-            SettingsScreen(navController = navController)
-        }
     }
-
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
