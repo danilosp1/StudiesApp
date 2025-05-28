@@ -11,6 +11,29 @@
     <string name="D3">Disciplina 3</string>
     <string name="D4">Disciplina 4</string>
 
+    <string name="voltar">Voltar</string>
+    <string name="sem_imagem_disciplina">Sem imagem para a disciplina</string>
+    <string name="icone_calendario_disciplina">Ícone de calendário da disciplina</string>
+    <string name="local_label_detail">Local</string>
+    <string name="materiais_label">Materiais:</string>
+    <string name="sem_materiais_cadastrados">Nenhum material cadastrado.</string>
+    <string name="tarefas_label">Tarefas:</string>
+    <string name="sem_tarefas_cadastradas">Nenhuma tarefa cadastrada para esta disciplina.</string>
+    <string name="deletar_disciplina_button">Deletar Disciplina</string>
+    <string name="adicionar_link_material">Adicionar Link de Material</string>
+    <string name="url_link">URL do Link</string>
+    <string name="descricao_link_opcional">Descrição (opcional)</string>
+    <string name="cancelar_button">Cancelar</string>
+    <string name="adicionar">Adicionar</string>
+    <string name="icone_link">Ícone de Link</string>
+    <string name="remover_link">Remover Link</string>
+
+    <string name="detalhes_disciplina">Detalhes da Disciplina</string>
+    <string name="erro_placeholder">Erro: %1$s</string>
+    <string name="disciplina_nao_encontrada">Disciplina não encontrada.</string>
+    <string name="professor_label_detail">Professor</string>
+    <string name="horarios_label_detail">Horários</string>
+    <string name="sem_tarefas_cadastradas_disciplina">Nenhuma tarefa para esta disciplina.</string>
 
     <string name="nova_disciplina_title">Nova Disciplina</string>
     <string name="nome_label">Nome</string>

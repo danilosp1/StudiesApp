@@ -33,6 +33,7 @@ import com.example.studies.view.screens.SettingsScreen
 import com.example.studies.view.screens.AddTaskScreen
 import com.example.studies.viewmodel.TaskViewModel
 import com.example.studies.view.screens.AddDisciplineScreen
+import com.example.studies.view.screens.DisciplineDetailScreen
 import com.example.studies.view.screens.TaskDetailScreen
 import com.example.studies.view.screens.TasksScreen
 import com.example.studies.viewmodel.DisciplineViewModelFactory
@@ -118,6 +119,23 @@ fun StudiesApp() {
                     navController = navController,
                     taskId = taskId,
                     viewModel = viewModel(factory = taskViewModelFactory)
+                )
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack()
+                }
+            }
+        }
+        composable(
+            route = "disciplineDetail/{disciplineId}",
+            arguments = listOf(navArgument("disciplineId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val disciplineId = backStackEntry.arguments?.getLong("disciplineId")
+            if (disciplineId != null && disciplineId != -1L) {
+                DisciplineDetailScreen(
+                    navController = navController,
+                    disciplineId = disciplineId,
+                    viewModel = viewModel(factory = disciplineViewModelFactory)
                 )
             } else {
                 LaunchedEffect(Unit) {

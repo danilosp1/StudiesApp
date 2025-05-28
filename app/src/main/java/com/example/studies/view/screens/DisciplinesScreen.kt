@@ -98,7 +98,7 @@ fun DisciplinesScreen(
                 ) {
                     items(disciplines, key = { it.id }) { disciplineEntity ->
                         DisciplineCard(discipline = disciplineEntity) {
-                            navController.navigate("discipline_details/${disciplineEntity.id}")
+                            navController.navigate("disciplineDetail/${disciplineEntity.id}")
                         }
                     }
                 }

@@ -1,23 +1,25 @@
 package com.example.studies.data.repository
 
 import com.example.studies.data.dao.DisciplineDao
+import com.example.studies.data.dao.DisciplineWithSchedules
+import com.example.studies.data.dao.MaterialLinkDao
 import com.example.studies.data.dao.TaskDao
-// import com.example.studies.data.dao.MaterialLinkDao // Se for usar
 import com.example.studies.data.model.DisciplineEntity
+import com.example.studies.data.model.MaterialLinkEntity
 import com.example.studies.data.model.SubjectScheduleEntity
 import com.example.studies.data.model.TaskEntity
-// import com.example.studies.data.model.MaterialLinkEntity // Se for usar
 import kotlinx.coroutines.flow.Flow
 
 class AppRepository(
     private val disciplineDao: DisciplineDao,
-    private val taskDao: TaskDao
+    private val taskDao: TaskDao,
+    private val materialLinkDao: MaterialLinkDao
 ) {
 
-    fun getAllDisciplinesWithSchedules(): Flow<List<com.example.studies.data.dao.DisciplineWithSchedules>> =
+    fun getAllDisciplinesWithSchedules(): Flow<List<DisciplineWithSchedules>> =
         disciplineDao.getAllDisciplinesWithSchedules()
 
-    fun getDisciplineWithSchedulesById(id: Long): Flow<com.example.studies.data.dao.DisciplineWithSchedules?> =
+    fun getDisciplineWithSchedulesById(id: Long): Flow<DisciplineWithSchedules?> =
         disciplineDao.getDisciplineWithSchedulesById(id)
 
     fun getAllDisciplines(): Flow<List<DisciplineEntity>> =
@@ -50,5 +52,20 @@ class AppRepository(
 
     suspend fun deleteTask(task: TaskEntity) {
         taskDao.deleteTask(task)
+    }
+
+    fun getMaterialLinksByDiscipline(disciplineId: Long): Flow<List<MaterialLinkEntity>> =
+        materialLinkDao.getMaterialLinksByDiscipline(disciplineId)
+
+    suspend fun insertMaterialLink(materialLink: MaterialLinkEntity) {
+        materialLinkDao.insertMaterialLink(materialLink)
+    }
+
+    suspend fun updateMaterialLink(materialLink: MaterialLinkEntity) {
+        materialLinkDao.updateMaterialLink(materialLink)
+    }
+
+    suspend fun deleteMaterialLink(materialLink: MaterialLinkEntity) {
+        materialLinkDao.deleteMaterialLink(materialLink)
     }
 }

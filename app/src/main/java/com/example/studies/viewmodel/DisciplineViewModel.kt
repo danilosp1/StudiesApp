@@ -5,12 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.studies.data.dao.DisciplineWithSchedules
 import com.example.studies.data.model.DisciplineEntity
+import com.example.studies.data.model.MaterialLinkEntity
 import com.example.studies.data.model.SubjectScheduleEntity
+import com.example.studies.data.model.TaskEntity
 import com.example.studies.data.repository.AppRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class DisciplinesListUiState(
@@ -19,6 +18,14 @@ data class DisciplinesListUiState(
 
 data class DisciplinesWithSchedulesUiState(
     val disciplines: List<DisciplineWithSchedules> = emptyList()
+)
+
+data class SelectedDisciplineDetailState(
+    val disciplineWithSchedules: DisciplineWithSchedules? = null,
+    val tasks: List<TaskEntity> = emptyList(),
+    val materialLinks: List<MaterialLinkEntity> = emptyList(),
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null
 )
 
 class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
@@ -41,6 +48,63 @@ class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
                 initialValue = DisciplinesWithSchedulesUiState()
             )
 
+    private val _selectedDisciplineDetailState = MutableStateFlow(SelectedDisciplineDetailState())
+    val selectedDisciplineDetailState: StateFlow<SelectedDisciplineDetailState> = _selectedDisciplineDetailState.asStateFlow()
+
+    private var currentSelectedDisciplineId: Long? = null
+    private val activeDisciplineJobs = mutableMapOf<Long, kotlinx.coroutines.Job>()
+
+    fun loadDisciplineDetailsById(disciplineId: Long) {
+        if (disciplineId == -1L) {
+            _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading = false, errorMessage = "ID da disciplina inválido")
+            currentSelectedDisciplineId = null
+            activeDisciplineJobs[disciplineId]?.cancel()
+            return
+        }
+
+        if (disciplineId == currentSelectedDisciplineId && !_selectedDisciplineDetailState.value.isLoading && _selectedDisciplineDetailState.value.errorMessage == null) {
+            return
+        }
+
+        currentSelectedDisciplineId = disciplineId
+        activeDisciplineJobs[disciplineId]?.cancel()
+
+        activeDisciplineJobs[disciplineId] = viewModelScope.launch {
+            _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading = true)
+            try {
+                val disciplineFlow = repository.getDisciplineWithSchedulesById(disciplineId)
+                val tasksFlow = repository.getTasksByDiscipline(disciplineId)
+                val linksFlow = repository.getMaterialLinksByDiscipline(disciplineId)
+
+                combine(disciplineFlow, tasksFlow, linksFlow) { disciplineDetails, tasks, links ->
+                    if (currentSelectedDisciplineId != disciplineId) throw kotlinx.coroutines.CancellationException("Stale data request")
+                    SelectedDisciplineDetailState(
+                        disciplineWithSchedules = disciplineDetails,
+                        tasks = tasks,
+                        materialLinks = links,
+                        isLoading = false
+                    )
+                }.catch { e ->
+                    if (e !is kotlinx.coroutines.CancellationException && currentSelectedDisciplineId == disciplineId) {
+                        _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading = false, errorMessage = e.message ?: "Erro ao carregar detalhes")
+                    }
+                }.collectLatest { combinedState ->
+                    if (currentSelectedDisciplineId == disciplineId) {
+                        _selectedDisciplineDetailState.value = combinedState
+                        if (combinedState.disciplineWithSchedules == null && !combinedState.isLoading) {
+                            _selectedDisciplineDetailState.value = _selectedDisciplineDetailState.value.copy(errorMessage = "Disciplina não encontrada")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                if (e !is kotlinx.coroutines.CancellationException && currentSelectedDisciplineId == disciplineId) {
+                    _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading = false, errorMessage = e.message ?: "Erro geral")
+                }
+            }
+        }
+    }
+
+
     fun addDiscipline(name: String, location: String?, professor: String?, schedules: List<SubjectScheduleEntity>) {
         viewModelScope.launch {
             val discipline = DisciplineEntity(
@@ -51,6 +115,38 @@ class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
             repository.insertDisciplineWithSchedules(discipline, schedules)
         }
     }
+
+    fun addMaterialLinkToSelectedDiscipline(url: String, description: String?) {
+        selectedDisciplineDetailState.value.disciplineWithSchedules?.discipline?.id?.let { discId ->
+            viewModelScope.launch {
+                if (url.isNotBlank()) {
+                    val newLink = MaterialLinkEntity(
+                        disciplineId = discId,
+                        url = url,
+                        description = description?.takeIf { it.isNotBlank() }
+                    )
+                    repository.insertMaterialLink(newLink)
+                }
+            }
+        }
+    }
+
+    fun deleteMaterialLink(link: MaterialLinkEntity) {
+        viewModelScope.launch {
+            repository.deleteMaterialLink(link)
+        }
+    }
+
+    fun deleteSelectedDiscipline(onDeleted: () -> Unit) {
+        selectedDisciplineDetailState.value.disciplineWithSchedules?.discipline?.let {
+            viewModelScope.launch {
+                repository.deleteDiscipline(it)
+                _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading=false)
+                currentSelectedDisciplineId = null
+                onDeleted()
+            }
+        }
+    }
 }
 
 class DisciplineViewModelFactory(private val repository: AppRepository) : ViewModelProvider.Factory {
@@ -59,6 +155,6 @@ class DisciplineViewModelFactory(private val repository: AppRepository) : ViewMo
             @Suppress("UNCHECKED_CAST")
             return DisciplineViewModel(repository) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }
