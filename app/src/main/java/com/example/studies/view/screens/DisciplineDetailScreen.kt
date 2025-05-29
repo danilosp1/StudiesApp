@@ -226,7 +226,7 @@ fun DisciplineDetailScreen(
                         items(tasksForDiscipline, key = { "task-${it.id}" }) { task ->
                             TaskItemCardDisciplina(
                                 task = task,
-                                onCheckedChange = { isChecked -> task.isCompleted = !isChecked }, // This does not trigger a DB update directly, it's for local state if needed before a VM call.
+                                onCheckedChange = { isChecked -> task.isCompleted = !isChecked },
                                 onClick = { navController.navigate("taskDetail/${task.id}") }
                             )
                             Spacer(modifier = Modifier.height(10.dp))
