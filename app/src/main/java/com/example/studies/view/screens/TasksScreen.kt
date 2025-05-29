@@ -49,7 +49,7 @@ fun TasksScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(45.dp))
             Row(
