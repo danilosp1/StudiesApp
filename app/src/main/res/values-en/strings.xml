@@ -1,0 +1,121 @@
+<resources>
+    <string name="app_name">Studies</string>
+    <string name="Ola_Inicio">Hello, %1$s!</string>
+    <string name="AulasDoDia">Today\'s Classes</string>
+    <string name="HomeLocal">Location</string>
+    <string name="AddDisciplina">Add new discipline</string>
+    <string name="DisciplinasTitulo">Your Disciplines</string>
+    <string name="DefaultUser">User</string>
+    <string name="D1">Discipline 1</string>
+    <string name="D2">Discipline 2</string>
+    <string name="D3">Discipline 3</string>
+    <string name="D4">Discipline 4</string>
+
+    <string name="voltar">Back</string>
+    <string name="sem_imagem_disciplina">No image for the discipline</string>
+    <string name="icone_calendario_disciplina">Discipline calendar icon</string>
+    <string name="local_label_detail">Location</string>
+    <string name="materiais_label">Materials:</string>
+    <string name="sem_materiais_cadastrados">No materials registered.</string>
+    <string name="tarefas_label">Tasks:</string>
+    <string name="sem_tarefas_cadastradas">No tasks registered for this discipline.</string>
+    <string name="deletar_disciplina_button">Delete Discipline</string>
+    <string name="adicionar_link_material">Add Material Link</string>
+    <string name="url_link">Link URL</string>
+    <string name="descricao_link_opcional">Description (optional)</string>
+    <string name="cancelar_button">Cancel</string>
+    <string name="adicionar">Add</string>
+    <string name="icone_link">Link Icon</string>
+    <string name="remover_link">Remove Link</string>
+
+    <string name="detalhes_disciplina">Discipline Details</string>
+    <string name="erro_placeholder">Error: %1$s</string>
+    <string name="disciplina_nao_encontrada">Discipline not found.</string>
+    <string name="professor_label_detail">Professor</string>
+    <string name="horarios_label_detail">Schedules</string>
+    <string name="sem_tarefas_cadastradas_disciplina">No tasks for this discipline.</string>
+
+    <string name="nova_disciplina_title">New Discipline</string>
+    <string name="nome_label">Name</string>
+    <string name="local_label">Location</string>
+    <string name="professor_label">Professor</string>
+    <string name="selecionar_imagem_label">Select image</string>
+    <string name="dias_da_semana_label">Days of the Week</string>
+    <string name="horarios_label">Schedules</string>
+
+    <string name="local_nao_definido">Location not set</string>
+    <string name="sem_aulas_hoje">No classes scheduled for today.</string>
+    <string name="subject_icon_desc">Discipline icon</string>
+
+    <string name="seg_short">Mon</string>
+    <string name="ter_short">Tue</string>
+    <string name="qua_short">Wed</string>
+    <string name="qui_short">Thu</string>
+    <string name="sex_short">Fri</string>
+
+    <string name="seg_full">Monday</string>
+    <string name="ter_full">Tuesday</string>
+    <string name="qua_full">Wednesday</string>
+    <string name="qui_full">Thursday</string>
+    <string name="sex_full">Friday</string>
+    <string name="sab_full">Saturday</string>
+    <string name="dom_full">Sunday</string>
+
+    <string name="inicio_label">Start</string>
+    <string name="termino_label">End</string>
+    <string name="adicionar_button">Add</string>
+    <string name="add_disciplina_fab_desc">Add New Discipline</string>
+
+    <string name="tarefas_title">Tasks</string>
+    <string name="add_tarefa_fab_desc">Add New Task</string>
+
+    <string name="configuracoes_screen_top_bar_title">Settings</string>
+    <string name="configuracoes_main_title">Settings</string>
+    <string name="sobre_button">About</string>
+    <string name="contato_button">Contact</string>
+    <string name="sobre_icon_desc">Information icon</string>
+    <string name="contato_icon_desc">Phone icon</string>
+
+    <string name="bem_vindo">Welcome!</string>
+    <string name="entrar_button">Enter</string>
+    <string name="nova_tarefa_title">New Task</string>
+    <string name="disciplina_label">Discipline</string>
+    <string name="selecionar_disciplina_action">Select Discipline</string>
+    <string name="nenhuma_disciplina_cadastrada">No discipline registered</string>
+    <string name="nenhuma_tarefa_geral">None (general task)</string>
+    <string name="descricao_label">Description</string>
+    <string name="prazo_entrega_label">Deadline</string>
+    <string name="data_label">Date</string>
+    <string name="date_placeholder">DD/MM/YYYY</string>
+    <string name="horario_label">Time</string>
+    <string name="time_placeholder">HH:MM</string>
+    <string name="select_label">Select %s</string>
+    <string name="nenhuma_tarefa_adicionada">No tasks added yet.</string>
+    <string name="sem_prazo">No deadline</string>
+    <string name="nenhuma_disciplina_adicionada_ainda">No disciplines added yet.</string>
+    <string name="imagem_disciplina_desc">Discipline Image</string>
+    <string name="professor_prefix_dinamico">Prof: %s</string>
+    <string name="local_prefix_dinamico">Location: %s</string>
+    <string name="select_time_action">Select Time</string>
+    <string name="nenhum_horario_cadastrado">No schedule registered.</string>
+    <string name="schedule_format">%1$s: %2$s - %3$s</string>
+    <string name="detalhes_tarefa_title">Task Details</string>
+    <string name="tarefa_nao_encontrada">Task not found.</string>
+    <string name="tarefa_geral_label">General Task</string>
+    <string name="descricao_section_title">Description:</string>
+    <string name="nenhuma_descricao_placeholder">No description.</string>
+    <string name="prazo_entrega_section_title">Deadline:</string>
+    <string name="status_section_title">Status:</string>
+    <string name="status_concluida">Completed</string>
+    <string name="status_pendente">Pending</string>
+    <string name="marcar_pendente_button">Mark as Pending</string>
+    <string name="concluir_tarefa_button">Complete Task</string>
+    <string name="deletar_tarefa_button">Delete Task</string>
+    <string name="deadline_time_only">Time: %1$s</string>
+    <string name="prazo_nao_definido">Not set</string>
+    <string name="app_preview_no_vm">Default Preview</string>
+
+    <string name="language_label">Language</string>
+    <string name="select_language_description">Select Language</string>
+    <string name="open_language_selection_description">Open language selection</string>
+</resources>

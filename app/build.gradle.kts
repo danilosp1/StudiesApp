@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.google.accompanist.systemuicontroller)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
 
     val room_version = "2.7.1"
     implementation("androidx.room:room-runtime:$room_version")
@@ -68,4 +69,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

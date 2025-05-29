@@ -3,9 +3,11 @@ package com.example.studies
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,14 +42,49 @@ import com.example.studies.view.screens.TaskDetailScreen
 import com.example.studies.view.screens.TasksScreen
 import com.example.studies.viewmodel.DisciplineViewModelFactory
 import com.example.studies.viewmodel.TaskViewModelFactory
+import android.content.res.Configuration
+import android.os.LocaleList
+import java.util.Locale
 
+private fun loadLanguagePreference(context: Context): String {
+    val sharedPreferences = context.getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+    val lang = sharedPreferences.getString("AppLanguage", "pt") ?: "pt"
+    return lang
+}
 
 class MainActivity : ComponentActivity() {
+    // Função para criar lista de linguas disponíveis
+    // No momento, inglês e português
+    override fun attachBaseContext(newBase: Context) {
+        val preferredLanguage = loadLanguagePreference(newBase)
+
+        val appLocaleListCompat = LocaleListCompat.forLanguageTags(preferredLanguage)
+
+        AppCompatDelegate.setApplicationLocales(appLocaleListCompat)
+
+        val configuration = Configuration(newBase.resources.configuration)
+
+        val locales = mutableListOf<Locale>()
+        for (i in 0 until appLocaleListCompat.size()) {
+            appLocaleListCompat[i]?.let { locales.add(it) }
+        }
+
+        if (locales.isNotEmpty()) {
+            val androidLocaleList = LocaleList(*locales.toTypedArray())
+            configuration.setLocales(androidLocaleList)
+        }
+
+        val updatedContext = newBase.createConfigurationContext(configuration)
+
+        super.attachBaseContext(updatedContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             StudiesTheme {
+                val composeContext = LocalContext.current
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
