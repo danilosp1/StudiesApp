@@ -8,6 +8,7 @@ import com.example.studies.data.model.DisciplineEntity
 import com.example.studies.data.model.MaterialLinkEntity
 import com.example.studies.data.model.SubjectScheduleEntity
 import com.example.studies.data.model.TaskEntity
+import com.example.studies.data.remote.MotdResponse
 import com.example.studies.data.repository.AppRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -53,6 +54,13 @@ class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
 
     private var currentSelectedDisciplineId: Long? = null
     private val activeDisciplineJobs = mutableMapOf<Long, kotlinx.coroutines.Job>()
+
+    private val _messageOfTheDay = MutableStateFlow<String?>(null)
+    val messageOfTheDay: StateFlow<String?> = _messageOfTheDay.asStateFlow()
+
+    private val _motdError = MutableStateFlow<String?>(null)
+    val motdError: StateFlow<String?> = _motdError.asStateFlow()
+
 
     fun loadDisciplineDetailsById(disciplineId: Long) {
         if (disciplineId == -1L) {
@@ -144,6 +152,20 @@ class DisciplineViewModel(private val repository: AppRepository) : ViewModel() {
                 _selectedDisciplineDetailState.value = SelectedDisciplineDetailState(isLoading=false)
                 currentSelectedDisciplineId = null
                 onDeleted()
+            }
+        }
+    }
+
+    fun fetchMessageOfTheDay() {
+        viewModelScope.launch {
+            _motdError.value = null
+            _messageOfTheDay.value = null
+            try {
+                repository.getMessageOfTheDay().collect { motdResponse ->
+                    _messageOfTheDay.value = motdResponse.title
+                }
+            } catch (e: Exception) {
+                _motdError.value = "Failed to fetch message: ${e.message}"
             }
         }
     }
