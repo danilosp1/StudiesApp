@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.studies.R
 import com.example.studies.StudiesApplication
 import com.example.studies.data.model.DisciplineEntity
 import com.example.studies.view.components.Footer
@@ -114,7 +116,7 @@ fun StyledTaskPickerField(
                 )
                 Icon(
                     Icons.Filled.ArrowDropDown,
-                    contentDescription = "Select $label",
+                    contentDescription = stringResource(id = R.string.select_label, label),
                     tint = primaryTextColor
                 )
             }
@@ -172,7 +174,7 @@ fun AddTaskScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Nova Tarefa", color = primaryTextColor) },
+                title = { Text(text = stringResource(id = R.string.nova_tarefa_title), color = primaryTextColor) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
@@ -192,7 +194,7 @@ fun AddTaskScreen(
                 StyledTaskTextField(
                     value = taskName,
                     onValueChange = { taskName = it },
-                    label = "Nome"
+                    label = stringResource(id = R.string.nome_label)
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -201,12 +203,12 @@ fun AddTaskScreen(
                     StyledTaskTextField(
                         value = selectedDiscipline?.name ?: "",
                         onValueChange = {  },
-                        label = "Disciplina",
+                        label = stringResource(id = R.string.disciplina_label),
                         readOnly = true,
                         trailingIcon = {
                             Icon(
                                 Icons.Default.ArrowDropDown,
-                                contentDescription = "Selecionar Disciplina",
+                                contentDescription = stringResource(id = R.string.selecionar_disciplina_action),
                                 Modifier.clickable { disciplineExpanded = !disciplineExpanded }
                             )
                         },
@@ -228,7 +230,7 @@ fun AddTaskScreen(
                     ) {
                         if (disciplineOptions.isEmpty()){
                             DropdownMenuItem(
-                                text = { Text("Nenhuma disciplina cadastrada", color = secondaryTextColor) },
+                                text = { Text(stringResource(id = R.string.nenhuma_disciplina_cadastrada), color = secondaryTextColor) },
                                 onClick = { disciplineExpanded = false }
                             )
                         }
@@ -242,7 +244,7 @@ fun AddTaskScreen(
                             )
                         }
                         DropdownMenuItem(
-                            text = { Text("Nenhuma (tarefa geral)", color = secondaryTextColor) },
+                            text = { Text(stringResource(id = R.string.nenhuma_tarefa_geral), color = secondaryTextColor) },
                             onClick = {
                                 selectedDiscipline = null
                                 disciplineExpanded = false
@@ -255,14 +257,14 @@ fun AddTaskScreen(
                 StyledTaskTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = "Descrição",
+                    label = stringResource(id = R.string.descricao_label),
                     singleLine = false,
                     minLines = 4
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "Prazo de entrega",
+                    text = stringResource(id = R.string.prazo_entrega_label),
                     fontSize = 22.sp,
                     color = primaryTextColor,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
@@ -274,9 +276,9 @@ fun AddTaskScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     StyledTaskPickerField(
-                        label = "Data",
+                        label = stringResource(id = R.string.data_label),
                         value = selectedDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(Locale("pt", "BR"))) ?: "",
-                        placeholder = "DD/MM/AAAA",
+                        placeholder = stringResource(id = R.string.date_placeholder),
                         onClick = {
                             val cal = Calendar.getInstance()
                             selectedDate?.let {
@@ -293,9 +295,9 @@ fun AddTaskScreen(
                     )
 
                     StyledTaskPickerField(
-                        label = "Horário",
+                        label = stringResource(id = R.string.horario_label),
                         value = selectedTime?.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale("pt", "BR"))) ?: "",
-                        placeholder = "HH:MM",
+                        placeholder = stringResource(id = R.string.time_placeholder),
                         onClick = {
                             val cal = Calendar.getInstance()
                             selectedTime?.let {
@@ -339,7 +341,7 @@ fun AddTaskScreen(
                     enabled = taskName.isNotBlank()
                 ) {
                     Text(
-                        text = "Adicionar",
+                        text = stringResource(id = R.string.adicionar_button),
                         color = primaryTextColor,
                         fontSize = 18.sp
                     )

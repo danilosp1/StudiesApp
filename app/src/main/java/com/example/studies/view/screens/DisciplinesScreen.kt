@@ -90,7 +90,7 @@ fun DisciplinesScreen(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Nenhuma disciplina adicionada ainda.", fontSize = 18.sp, color = secondaryTextColor)
+                    Text(stringResource(id = R.string.nenhuma_disciplina_adicionada_ainda), fontSize = 18.sp, color = secondaryTextColor)
                 }
             } else {
                 LazyColumn(
@@ -133,7 +133,7 @@ fun DisciplineCard(discipline: DisciplineEntity, onClick: () -> Unit = {}) {
             ) {
                 Icon(
                     imageVector = Icons.Outlined.DateRange,
-                    contentDescription = "Imagem da Disciplina",
+                    contentDescription = stringResource(id = R.string.imagem_disciplina_desc),
                     tint = borderColor,
                     modifier = Modifier.size(30.dp)
                 )
@@ -147,14 +147,14 @@ fun DisciplineCard(discipline: DisciplineEntity, onClick: () -> Unit = {}) {
                 )
                 if (!discipline.professor.isNullOrBlank()) {
                     Text(
-                        text = "Prof: ${discipline.professor}",
+                        text = stringResource(id = R.string.professor_prefix_dinamico, discipline.professor),
                         fontSize = 14.sp,
                         color = secondaryTextColor
                     )
                 }
                 if (!discipline.location.isNullOrBlank()) {
                     Text(
-                        text = "Local: ${discipline.location}",
+                        text = stringResource(id = R.string.local_prefix_dinamico, discipline.location),
                         fontSize = 14.sp,
                         color = secondaryTextColor
                     )

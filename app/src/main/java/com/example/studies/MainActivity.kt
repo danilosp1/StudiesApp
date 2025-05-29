@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -150,6 +151,6 @@ fun StudiesApp() {
 @Composable
 fun DefaultPreview() {
     StudiesTheme {
-        Text("App Preview (Funcionalidade do ViewModel não disponível no preview)")
+        Text(stringResource(id = R.string.app_preview_no_vm))
     }
 }

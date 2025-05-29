@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.studies.MainActivity
+import com.example.studies.R
 import com.example.studies.StudiesApplication
 import com.example.studies.ui.theme.StudiesTheme
 import com.example.studies.view.components.Footer
@@ -59,12 +60,12 @@ fun TaskDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalhes da Tarefa") },
+                title = { Text(stringResource(id = R.string.detalhes_tarefa_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(id = R.string.voltar)
                         )
                     }
                 },
@@ -85,12 +86,12 @@ fun TaskDetailScreen(
                 }
                 errorMessage != null -> {
                     Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
-                        Text("Erro: $errorMessage", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(id = R.string.erro_placeholder, errorMessage), color = MaterialTheme.colorScheme.error)
                     }
                 }
                 task == null -> {
                     Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
-                        Text("Tarefa não encontrada.")
+                        Text(stringResource(id = R.string.tarefa_nao_encontrada))
                     }
                 }
                 else -> {
@@ -117,16 +118,16 @@ fun TaskDetailScreen(
                                 modifier = Modifier.padding(bottom = 24.dp)
                             )
                         } ?: Text(
-                            text = "Tarefa Geral",
+                            text = stringResource(id = R.string.tarefa_geral_label),
                             fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
 
 
-                        DetailSection(title = "Descrição:", content = task.description ?: "Nenhuma descrição.")
-                        DetailSection(title = "Prazo de entrega:", content = formatTaskDeadline(task.dueDate, task.dueTime))
-                        DetailSection(title = "Status:", content = if (task.isCompleted) "Concluída" else "Pendente",
+                        DetailSection(title = stringResource(id = R.string.descricao_section_title), content = task.description ?: stringResource(id = R.string.nenhuma_descricao_placeholder))
+                        DetailSection(title = stringResource(id = R.string.prazo_entrega_section_title), content = formatTaskDeadline(task.dueDate, task.dueTime))
+                        DetailSection(title = stringResource(id = R.string.status_section_title), content = if (task.isCompleted) stringResource(id = R.string.status_concluida) else stringResource(id = R.string.status_pendente),
                             contentColor = if (task.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
 
@@ -142,7 +143,7 @@ fun TaskDetailScreen(
                                 .height(50.dp)
                         ) {
                             Text(
-                                text = if (task.isCompleted) "Marcar como Pendente" else "Concluir Tarefa",
+                                text = if (task.isCompleted) stringResource(id = R.string.marcar_pendente_button) else stringResource(id = R.string.concluir_tarefa_button),
                                 fontSize = 18.sp
                             )
                         }
@@ -158,7 +159,7 @@ fun TaskDetailScreen(
                                 .height(50.dp)
                         ) {
                             Text(
-                                text = "Deletar Tarefa",
+                                text = stringResource(id = R.string.deletar_tarefa_button),
                                 color = MaterialTheme.colorScheme.onError,
                                 fontSize = 18.sp
                             )
@@ -194,10 +195,14 @@ private fun DetailSection(title: String, content: String, contentColor: Color = 
     }
 }
 
+@Composable
 private fun formatTaskDeadline(dueDateStr: String?, dueTimeStr: String?): String {
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val displayTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale("pt", "BR"))
+
+    val prazoNaoDefinido = stringResource(id = R.string.prazo_nao_definido)
+    val deadlineTimeOnlyFormat = stringResource(id = R.string.deadline_time_only)
 
 
     val date = try { dueDateStr?.let { LocalDate.parse(it, dateFormatter) } } catch (e: DateTimeParseException) { null }
@@ -206,8 +211,8 @@ private fun formatTaskDeadline(dueDateStr: String?, dueTimeStr: String?): String
     return when {
         date != null && time != null -> "${date.format(dateFormatter)} - ${time.format(displayTimeFormatter)}"
         date != null -> date.format(dateFormatter)
-        time != null -> "Hora: ${time.format(displayTimeFormatter)}"
-        else -> "Não definido"
+        time != null -> String.format(deadlineTimeOnlyFormat, time.format(displayTimeFormatter))
+        else -> prazoNaoDefinido
     }
 }
 

@@ -87,7 +87,7 @@ fun TasksScreen(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Nenhuma tarefa adicionada ainda.", fontSize = 18.sp, color = secondaryTextColor)
+                    Text(stringResource(id = R.string.nenhuma_tarefa_adicionada), fontSize = 18.sp, color = secondaryTextColor)
                 }
             } else {
                 Box(
@@ -124,6 +124,7 @@ fun TaskItemCard(
 ) {
     val dateTimeFormater = remember { DateTimeFormatter.ofPattern("dd/MM - HH:mm", Locale("pt", "BR")) }
     val dateOnlyFormater = remember { DateTimeFormatter.ofPattern("dd/MM", Locale("pt", "BR")) }
+    val noDeadlineText = stringResource(id = R.string.sem_prazo)
     val formattedDateTime = remember(task.dueDate, task.dueTime) {
         try {
             val date = task.dueDate?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
@@ -132,10 +133,10 @@ fun TaskItemCard(
             when {
                 date != null && time != null -> "${date.format(dateOnlyFormater)} - ${time.format(DateTimeFormatter.ofPattern("HH:mm"))}"
                 date != null -> date.format(dateOnlyFormater)
-                else -> "Sem prazo"
+                else -> noDeadlineText
             }
         } catch (e: Exception) {
-            task.dueDate ?: "Sem prazo"
+            task.dueDate ?: noDeadlineText
         }
     }
 
