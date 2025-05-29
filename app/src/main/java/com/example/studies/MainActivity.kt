@@ -38,6 +38,7 @@ import com.example.studies.view.screens.AddTaskScreen
 import com.example.studies.viewmodel.TaskViewModel
 import com.example.studies.view.screens.AddDisciplineScreen
 import com.example.studies.view.screens.DisciplineDetailScreen
+import com.example.studies.view.screens.RegisterScreen // Importar RegisterScreen
 import com.example.studies.view.screens.TaskDetailScreen
 import com.example.studies.view.screens.TasksScreen
 import com.example.studies.viewmodel.DisciplineViewModelFactory
@@ -53,8 +54,6 @@ private fun loadLanguagePreference(context: Context): String {
 }
 
 class MainActivity : ComponentActivity() {
-    // Função para criar lista de linguas disponíveis
-    // No momento, inglês e português
     override fun attachBaseContext(newBase: Context) {
         val preferredLanguage = loadLanguagePreference(newBase)
 
@@ -117,6 +116,9 @@ fun StudiesApp() {
     NavHost(navController = navController, startDestination = startDestination) {
         composable("welcome") {
             WelcomeScreen(navController = navController)
+        }
+        composable("register") {
+            RegisterScreen(navController = navController)
         }
         composable("home") {
             HomeScreen(navController = navController)
