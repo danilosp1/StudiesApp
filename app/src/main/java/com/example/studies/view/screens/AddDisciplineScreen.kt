@@ -330,7 +330,7 @@ fun TimePickerField(
                 Text(time, fontSize = 18.sp, color = Color(0xFF0E0E0E))
                 Icon(
                     Icons.Filled.ArrowDropDown,
-                    contentDescription = "Select Time",
+                    contentDescription = stringResource(id = R.string.select_time_action),
                     tint = Color(0xFF0E0E0E)
                 )
             }

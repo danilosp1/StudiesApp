@@ -39,7 +39,6 @@ import java.time.DayOfWeek
 
 data class Subject(val name: String, val time: String, val location: String)
 
-val screenBackgroundColor = Color(0xFFEAEAEA)
 val primaryTextColorHomeScreen = Color(0xFF0E0E0E)
 val secondaryTextColorHomeScreen = Color(0xFF757575)
 val highlightColor = Color(0xFFFFF59D)
@@ -88,7 +87,6 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(screenBackgroundColor)
     ) {
         Column(
             modifier = Modifier

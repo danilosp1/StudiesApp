@@ -226,7 +226,7 @@ fun DisciplineDetailScreen(
                         items(tasksForDiscipline, key = { "task-${it.id}" }) { task ->
                             TaskItemCardDisciplina(
                                 task = task,
-                                onCheckedChange = { isChecked -> task.isCompleted = !isChecked },
+                                onCheckedChange = { isChecked -> task.isCompleted = !isChecked }, // This does not trigger a DB update directly, it's for local state if needed before a VM call.
                                 onClick = { navController.navigate("taskDetail/${task.id}") }
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -246,7 +246,7 @@ fun DisciplineDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
                                 .height(50.dp),
-                            enabled = discipline != null
+                            // enabled = discipline != null
                         ) {
                             Text(
                                 text = stringResource(R.string.deletar_disciplina_button),
@@ -326,8 +326,9 @@ private fun DetailItem(label: String, value: String?) {
     }
 }
 
+@Composable
 private fun formatSchedules(schedules: List<com.example.studies.data.model.SubjectScheduleEntity>): String {
-    if (schedules.isEmpty()) return "Nenhum horário cadastrado."
+    if (schedules.isEmpty()) return stringResource(id = R.string.nenhum_horario_cadastrado)
     return schedules.joinToString(separator = "\n") {
         "${it.dayOfWeek}: ${it.startTime} - ${it.endTime}"
     }

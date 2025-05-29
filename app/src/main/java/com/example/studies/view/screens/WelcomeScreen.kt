@@ -13,11 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.studies.R
 import com.example.studies.ui.theme.StudiesTheme
 
 @Composable
@@ -33,7 +35,7 @@ fun WelcomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Bem-Vindo(a)!",
+            text = stringResource(id = R.string.bem_vindo),
             fontSize = 32.sp,
             color = Color(0xFF424242),
             modifier = Modifier.padding(bottom = 32.dp)
@@ -42,7 +44,7 @@ fun WelcomeScreen(navController: NavController) {
         OutlinedTextField(
             value = userName,
             onValueChange = { userName = it },
-            label = { Text("Nome", color = Color(0xFF424242)) },
+            label = { Text(stringResource(id = R.string.nome_label), color = Color(0xFF424242)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF424242),
                 unfocusedBorderColor = Color(0xFF6B6969),
@@ -70,7 +72,7 @@ fun WelcomeScreen(navController: NavController) {
                 .fillMaxWidth(0.6f)
                 .height(50.dp)
         ) {
-            Text(text = "Entrar", color = Color.White, fontSize = 18.sp)
+            Text(text = stringResource(id = R.string.entrar_button), color = Color.White, fontSize = 18.sp)
         }
     }
 }

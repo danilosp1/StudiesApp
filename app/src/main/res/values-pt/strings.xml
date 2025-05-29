@@ -113,7 +113,7 @@
     <string name="deletar_tarefa_button">Deletar Tarefa</string>
     <string name="deadline_time_only">Hora: %1$s</string>
     <string name="prazo_nao_definido">Não definido</string>
-    <string name="app_preview_no_vm">App Preview (Funcionalidade do ViewModel não disponível no preview)</string>
+    <string name="app_preview_no_vm">Default Preview</string>
 
     <string name="language_label">Idioma</string>
     <string name="select_language_description">Selecionar Idioma</string>
