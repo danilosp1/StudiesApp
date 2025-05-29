@@ -1,4 +1,29 @@
 <resources>
+    <string name="senha_label">Senha</string>
+    <string name="cadastre_se_button">Cadastre-se</string>
+    <string name="criar_conta_title">Criar Conta</string>
+    <string name="confirmar_senha_label">Confirmar Senha</string>
+    <string name="cadastrar_button">Cadastrar</string>
+    <string name="ja_tenho_conta_button">Já tenho uma conta</string>
+    <string name="nome_usuario_label">Nome de Usuário</string>
+    <string name="campos_obrigatorios_toast">Todos os campos são obrigatórios.</string>
+    <string name="login_invalido_toast">Usuário ou senha inválidos.</string>
+    <string name="senhas_nao_coincidem_toast">As senhas não coincidem.</string>
+    <string name="registro_sucesso_toast">Usuário registrado com sucesso!</string>
+    <string name="registro_falha_toast">Falha no registro. Nome de usuário pode já existir.</string>
+    <string name="log_user_auth_file_not_found_creating_new">Arquivo %1$s não encontrado. Criando novo.</string>
+    <string name="log_user_auth_error_reading_file">Erro ao ler %1$s</string>
+    <string name="log_user_auth_error_parsing_file">Erro ao parsear %1$s</string>
+    <string name="log_user_auth_users_saved">Usuários salvos em %1$s</string>
+    <string name="log_user_auth_error_writing_file">Erro ao escrever em %1$s</string>
+    <string name="log_user_auth_reg_empty_fields">Tentativa de registro com campos vazios.</string>
+    <string name="log_user_auth_reg_user_exists">Usuário \'%1$s\' já existe.</string>
+    <string name="log_user_auth_reg_success">Usuário \'%1$s\' registrado com sucesso.</string>
+    <string name="log_user_auth_login_empty_fields">Tentativa de login com campos vazios.</string>
+    <string name="log_user_auth_login_success">Login bem-sucedido para \'%1$s\'.</string>
+    <string name="log_user_auth_login_wrong_password">Senha incorreta para \'%1$s\'.</string>
+    <string name="log_user_auth_login_user_not_found">Usuário \'%1$s\' não encontrado para login.</string>
+
     <string name="app_name">Studies</string>
     <string name="Ola_Inicio">Olá, %1$s!</string>
     <string name="AulasDoDia">Aulas do dia</string>

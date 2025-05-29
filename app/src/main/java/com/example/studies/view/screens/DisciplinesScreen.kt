@@ -50,7 +50,7 @@ fun DisciplinesScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(16.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(45.dp))
             Row(

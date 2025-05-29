@@ -1,4 +1,29 @@
 <resources>
+    <string name="senha_label">Password</string>
+    <string name="cadastre_se_button">Sign Up</string>
+    <string name="criar_conta_title">Create Account</string>
+    <string name="confirmar_senha_label">Confirm Password</string>
+    <string name="cadastrar_button">Register</string>
+    <string name="ja_tenho_conta_button">Already have an account</string>
+    <string name="nome_usuario_label">Username</string>
+    <string name="campos_obrigatorios_toast">All fields are required.</string>
+    <string name="login_invalido_toast">Invalid username or password.</string>
+    <string name="senhas_nao_coincidem_toast">Passwords do not match.</string>
+    <string name="registro_sucesso_toast">User registered successfully!</string>
+    <string name="registro_falha_toast">Registration failed. Username may already exist.</string>
+    <string name="log_user_auth_file_not_found_creating_new">File %1$s not found. Creating new.</string>
+    <string name="log_user_auth_error_reading_file">Error reading %1$s</string>
+    <string name="log_user_auth_error_parsing_file">Error parsing %1$s</string>
+    <string name="log_user_auth_users_saved">Users saved to %1$s</string>
+    <string name="log_user_auth_error_writing_file">Error writing to %1$s</string>
+    <string name="log_user_auth_reg_empty_fields">Registration attempt with empty fields.</string>
+    <string name="log_user_auth_reg_user_exists">User \'%1$s\' already exists.</string>
+    <string name="log_user_auth_reg_success">User \'%1$s\' registered successfully.</string>
+    <string name="log_user_auth_login_empty_fields">Login attempt with empty fields.</string>
+    <string name="log_user_auth_login_success">Login successful for \'%1$s\'.</string>
+    <string name="log_user_auth_login_wrong_password">Incorrect password for \'%1$s\'.</string>
+    <string name="log_user_auth_login_user_not_found">User \'%1$s\' not found for login.</string>
+
     <string name="app_name">Studies</string>
     <string name="Ola_Inicio">Hello, %1$s!</string>
     <string name="AulasDoDia">Today\'s Classes</string>
